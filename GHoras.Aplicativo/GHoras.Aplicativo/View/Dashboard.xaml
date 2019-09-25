@@ -7,9 +7,36 @@
              x:Class="GHoras.Aplicativo.View.Dashboard">
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+            <StackLayout VerticalOptions="FillAndExpand" 
+                        HorizontalOptions="CenterAndExpand">
+                <Label HorizontalTextAlignment="Center">GetRow</Label>
+                <Button x:Name="btn_teste" Clicked="Btn_teste_Clicked"
+                        Text="Teste estado serviço"></Button>
+                <Button x:Name="btn_teste2" Clicked="Btn_teste2_Clicked" 
+                        Text="Teste pegar valor linha"></Button>
+                <Button x:Name="btn_teste3" Clicked="Btn_teste3_Clicked" 
+                        Text="Teste pegar valores linhas"></Button>
+                <Button x:Name="btn_teste4" Clicked="Btn_teste4_Clicked" 
+                        Text="Teste pegar infos linha por id"></Button>
+                <Button x:Name="btn_teste5" Clicked="Btn_teste5_Clicked" 
+                        Text="Teste pegar infos linha por data"></Button>
+            </StackLayout>
+            <StackLayout VerticalOptions="FillAndExpand" 
+                        HorizontalOptions="CenterAndExpand">
+                <Label HorizontalTextAlignment="Center">Get Infos</Label>
+                <Button x:Name="btn_teste6" Clicked="Btn_teste6_Clicked" 
+                        Text="Teste Pegar Infos Planilha"></Button>
+                <Button x:Name="btn_teste7" Clicked="Btn_teste7_Clicked" 
+                        Text="Teste Pegar Infos Atualizacao Planilha"></Button>
+            </StackLayout>
+            <StackLayout VerticalOptions="FillAndExpand" 
+                        HorizontalOptions="CenterAndExpand">
+                <Label HorizontalTextAlignment="Center">Send Date</Label>
+                <Button x:Name="btn_teste8" Clicked="Btn_teste8_Clicked" 
+                        Text="Teste Enviar Data"></Button>
+                <Button x:Name="btn_teste9" Clicked="Btn_teste9_Clicked" 
+                        Text="Teste Enviar Observacao"></Button>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
