@@ -14,15 +14,39 @@ namespace GHoras.Aplicativo.Implementation
         private readonly HttpClient _client;
         private readonly string _pathServiceDate = "api/spreadsheet/data/insertTime";
         private readonly string _pathServiceObs = "api/spreadsheet/data/insertObs";
+        private readonly string _pathServiceDelDate = "api/spreadsheet/data/deleteCell";
 
         public DateService()
         {
             _client = ServiceSettings.ServiceStartSettings();
         }
 
-        public async Task<bool> SendDate(DateValue dateValue)
+        public async Task<bool> DeleteDate(string id)
         {
             HttpResponseMessage response = null;
+
+            try
+            {
+                response = await _client.DeleteAsync($"{_pathServiceDelDate}/{id}");
+
+                if (response.IsSuccessStatusCode)
+                    return true;
+                else
+                    return false;
+            }
+            catch
+            {
+                throw new HttpRequestException($"Erro na requisição ao serviço. Requisição retornou com o status '{response.StatusCode}'");
+            }
+            finally
+            {
+                response.Dispose();
+            }
+        }
+
+        public async Task<bool> SendDate(DateValue dateValue)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
             string dateValueJson = JsonConvert.SerializeObject(dateValue);
 
             using (HttpContent body = new StringContent(dateValueJson, Encoding.UTF8, "application/json"))
@@ -48,7 +72,7 @@ namespace GHoras.Aplicativo.Implementation
 
         public async Task<bool> SendObservation(ObsValue obsValue)
         {
-            HttpResponseMessage response = null;
+            HttpResponseMessage response = new HttpResponseMessage();
             string obsValueJson = JsonConvert.SerializeObject(obsValue);
 
             using (HttpContent body = new StringContent(obsValueJson, Encoding.UTF8, "application/json"))

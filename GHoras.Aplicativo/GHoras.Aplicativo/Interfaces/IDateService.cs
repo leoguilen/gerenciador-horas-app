@@ -7,5 +7,6 @@ namespace GHoras.Aplicativo.Interfaces
     {
         Task<bool> SendDate(DateValue dateValue);
         Task<bool> SendObservation(ObsValue obsValue);
+        Task<bool> DeleteDate(string id);
     }
 }

@@ -153,7 +153,7 @@ namespace GHoras.Aplicativo.View
             {
                 Data = "01/09",
                 Evento = Evento.entrada.ToString(),
-                Hora = DateTime.Now.ToShortTimeString(),
+                Hora = "08:00:00",
                 Autor = "Leonardo Guilen"
             };
 
@@ -184,6 +184,24 @@ namespace GHoras.Aplicativo.View
                     await DisplayAlert("Alerta", "Novo valor inserido com sucesso!", "OK");
                 else
                     await DisplayAlert("Alerta", "Falha ao inserir um novo valor", "OK");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Alerta", $"Erro: {ex.Message} ", "OK");
+            }
+        }
+
+        private async void Btn_teste10_Clicked(object sender, EventArgs e)
+        {
+            RemoveDate deleteDate = new RemoveDate();
+            string batchID = "R5C3";
+
+            try
+            {
+                if(await deleteDate.DeleteDateAsync(batchID) == true)
+                    await DisplayAlert("Alerta", "Valor deletado com sucesso!", "OK");
+                else
+                    await DisplayAlert("Alerta", "Falha ao deletar um valor", "OK");
             }
             catch (Exception ex)
             {
