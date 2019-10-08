@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:controls="clr-namespace:CarouselView.FormsPlugin.Abstractions;assembly=CarouselView.FormsPlugin.Abstractions"
+            xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+            android:TabbedPage.ToolbarPlacement="Bottom"
+             android:TabbedPage.IsSwipePagingEnabled="False"             
+             mc:Ignorable="d"
+             x:Class="ManagerHours.View.Home">
+  
+    <!-- DASHBOARD -->
+    <ContentPage x:Name="tab_dash" Title="Dashboard" 
+                 BackgroundImageSource="fundodash" 
+                 IconImageSource="dashboard" >
+        <ContentPage.Content>
+            <StackLayout Orientation="Vertical">
+
+                <AbsoluteLayout>
+                    <Image Source="icon" WidthRequest="35" HorizontalOptions="FillAndExpand" Margin="10"/>
+                </AbsoluteLayout>
+
+                <!-- HEADER -->
+                <StackLayout VerticalOptions="EndAndExpand" 
+                         HorizontalOptions="FillAndExpand"
+                         Padding="30" TranslationY="-20" >
+
+                    <!-- Exibição do total de horas extras -->
+                    <StackLayout Orientation="Horizontal">
+                        <StackLayout HorizontalOptions="FillAndExpand">
+                            <Label Text="TOTAL HORAS EXTRAS" 
+                       TextColor="White" FontSize="Subtitle"
+                       HorizontalTextAlignment="Center" 
+                       FontAttributes="Bold"/>
+
+                            <Label x:Name="lbl_hrsExtra" Text="00:00" TextColor="White" 
+                            FontSize="50" FontAttributes="Bold" 
+                            HorizontalTextAlignment="Center" />
+                        </StackLayout>
+                        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="Center" >
+                            <ImageButton x:Name="icon" Source="refreshing_ico" WidthRequest="100"
+                                     BackgroundColor="Transparent" Clicked="Icon_Clicked" />
+                            <ff:CachedImage x:Name="gif" Source="refreshing.gif" 
+                                        WidthRequest="50" IsVisible="False" TranslationX="-10"/>
+                        </StackLayout>
+                    </StackLayout>
+                </StackLayout>
+
+                <!-- BODY -->
+                <StackLayout VerticalOptions="StartAndExpand" 
+                         HorizontalOptions="Fill"
+                         Padding="20" TranslationY="-35"
+                         HeightRequest="170" Orientation="Vertical">
+
+                    <!-- Frame de ultima atualização -->
+                    <StackLayout VerticalOptions="CenterAndExpand" Margin="0,-30,0,20">
+                        <Label Text="Ultima atualização em 00/00/0000 00:00:00" TextColor="White" FontSize="Micro" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
+                    </StackLayout>
+
+                    <!-- Carousel View -->
+                    <controls:CarouselViewControl x:Name="CV" ItemsSource="{Binding People}" 
+                                              HeightRequest="200" HorizontalOptions="CenterAndExpand" 
+                                              VerticalOptions="StartAndExpand" Margin="10"
+                                              ShowIndicators="True" IndicatorsShape="Circle"
+                                              CurrentPageIndicatorTintColor="Teal">
+                        <controls:CarouselViewControl.ItemTemplate>
+                            <DataTemplate>
+                                <Frame BorderColor="LightGray" CornerRadius="10" HasShadow="False">
+                                    <Grid>
+                                        <StackLayout Grid.Column="0" Grid.Row="0" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand">
+                                            <Label Text="{Binding}" FontSize="Subtitle" 
+                                                   HorizontalOptions="StartAndExpand" 
+                                                   VerticalOptions="CenterAndExpand" />
+                                            <Label Grid.Column="1" Grid.Row="1" 
+                                                   HorizontalOptions="StartAndExpand" 
+                                                   VerticalOptions="CenterAndExpand" 
+                                                   Text="{Binding}" FontSize="Title"/>
+                                        </StackLayout>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </controls:CarouselViewControl.ItemTemplate>
+                    </controls:CarouselViewControl>
+                </StackLayout>
+
+                <!-- BOTÃO ADD -->
+                <StackLayout VerticalOptions="EndAndExpand" 
+                             HorizontalOptions="Center" >
+                    <ImageButton Source="add" TranslationY="-8" 
+                                 BackgroundColor="Transparent" 
+                                 Clicked="ImageButton_Clicked_1" />
+                </StackLayout>
+
+            </StackLayout>
+        </ContentPage.Content>
+    </ContentPage>
+    
+    <!-- HISTÓRICO -->
+    <ContentPage x:Name="tab_hist" Title="Histórico" IconImageSource="historico" >
+        <ContentPage.Content>
+            <Label Text="Sou page de histórico"/>
+        </ContentPage.Content>
+    </ContentPage>
+    
+    <!-- CONFIGURAÇÕES -->
+    <ContentPage x:Name="tab_config" Title="Configurações" IconImageSource="configuracao" >
+        <ContentPage.Content>
+            <Label Text="Sou a page de configuração"/>
+        </ContentPage.Content>
+    </ContentPage>
+
+</TabbedPage>

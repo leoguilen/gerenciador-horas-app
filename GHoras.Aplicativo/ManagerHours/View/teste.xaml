@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="ManagerHours.View.teste">
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout>
+                <StackLayout VerticalOptions="FillAndExpand" 
+                        HorizontalOptions="CenterAndExpand">
+                    <Label HorizontalTextAlignment="Center">Get Row</Label>
+                    <Button x:Name="btn_teste" Clicked="Btn_teste_Clicked"
+                        Text="Teste estado serviço"></Button>
+                    <Button x:Name="btn_teste2" Clicked="Btn_teste2_Clicked" 
+                        Text="Teste pegar valor linha"></Button>
+                    <Button x:Name="btn_teste3" Clicked="Btn_teste3_Clicked" 
+                        Text="Teste pegar valores linhas"></Button>
+                    <Button x:Name="btn_teste4" Clicked="Btn_teste4_Clicked" 
+                        Text="Teste pegar infos linha por id"></Button>
+                    <Button x:Name="btn_teste5" Clicked="Btn_teste5_Clicked" 
+                        Text="Teste pegar infos linha por data"></Button>
+                </StackLayout>
+                <StackLayout VerticalOptions="FillAndExpand" 
+                        HorizontalOptions="CenterAndExpand">
+                    <Label HorizontalTextAlignment="Center">Get Infos</Label>
+                    <Button x:Name="btn_teste6" Clicked="Btn_teste6_Clicked" 
+                        Text="Teste Pegar Infos Planilha"></Button>
+                    <Button x:Name="btn_teste7" Clicked="Btn_teste7_Clicked" 
+                        Text="Teste Pegar Infos Atualizacao Planilha"></Button>
+                </StackLayout>
+                <StackLayout VerticalOptions="FillAndExpand" 
+                        HorizontalOptions="CenterAndExpand">
+                    <Label HorizontalTextAlignment="Center">Send Date</Label>
+                    <Button x:Name="btn_teste8" Clicked="Btn_teste8_Clicked" 
+                        Text="Teste Enviar Data"></Button>
+                    <Button x:Name="btn_teste9" Clicked="Btn_teste9_Clicked" 
+                        Text="Teste Enviar Observacao"></Button>
+                </StackLayout>
+                <StackLayout VerticalOptions="FillAndExpand" 
+                        HorizontalOptions="CenterAndExpand">
+                    <Label HorizontalTextAlignment="Center">Delete Date</Label>
+                    <Button x:Name="btn_teste10" Clicked="Btn_teste10_Clicked" 
+                        Text="Teste Deletar Data"></Button>
+                </StackLayout>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
