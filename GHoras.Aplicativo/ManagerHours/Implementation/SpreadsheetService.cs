@@ -1,8 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using Polly;
+using System;
 using System.Net.Http;
+using Newtonsoft.Json;
+using System.Diagnostics;
+using ManagerHours.Model;
 using ManagerHours._Util;
 using System.Threading.Tasks;
-using ManagerHours.Model;
 using ManagerHours.Interfaces;
 
 namespace ManagerHours.Implementation
@@ -25,7 +28,15 @@ namespace ManagerHours.Implementation
 
             try
             {
-                response = await _client.GetAsync($"{_client.BaseAddress + _pathServiceInfo}");
+                var result = await Policy.Handle<HttpRequestException>()
+                  .OrResult<HttpResponseMessage>(r => (int)r.StatusCode != 200)
+                  .WaitAndRetryAsync(3, i => TimeSpan.FromSeconds(10))
+                  .ExecuteAsync(async () =>
+                  {
+                      response = await _client.GetAsync($"{_client.BaseAddress + _pathServiceInfo}");
+                      Debug.WriteLine($"{ DateTime.Now } - Enviando requisição ao servidor para pegar informações da última atualização da planilha");
+                      return response;
+                  });
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -56,7 +67,15 @@ namespace ManagerHours.Implementation
 
             try
             {
-                response = await _client.GetAsync($"{_client.BaseAddress + _pathServiceUpdateInfo}");
+                var result = await Policy.Handle<HttpRequestException>()
+                  .OrResult<HttpResponseMessage>(r => (int)r.StatusCode != 200)
+                  .WaitAndRetryAsync(3, i => TimeSpan.FromSeconds(10))
+                  .ExecuteAsync(async () =>
+                  {
+                      response = await _client.GetAsync($"{_client.BaseAddress + _pathServiceUpdateInfo}");
+                      Debug.WriteLine($"{ DateTime.Now } - Enviando requisição ao servidor para pegar informações da última atualização da planilha");
+                      return response;
+                  });
 
                 if (response.IsSuccessStatusCode)
                 {

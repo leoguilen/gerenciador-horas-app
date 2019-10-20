@@ -5,8 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
              xmlns:controls="clr-namespace:CarouselView.FormsPlugin.Abstractions;assembly=CarouselView.FormsPlugin.Abstractions"
-            xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-            android:TabbedPage.ToolbarPlacement="Bottom"
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             android:TabbedPage.ToolbarPlacement="Bottom"
              android:TabbedPage.IsSwipePagingEnabled="False"             
              mc:Ignorable="d"
              x:Class="ManagerHours.View.Home">
@@ -19,7 +19,8 @@
             <StackLayout Orientation="Vertical">
 
                 <AbsoluteLayout>
-                    <Image Source="icon" WidthRequest="35" HorizontalOptions="FillAndExpand" Margin="10"/>
+                    <Image Source="icon" WidthRequest="35" 
+                           HorizontalOptions="FillAndExpand" Margin="10"/>
                 </AbsoluteLayout>
 
                 <!-- HEADER -->
@@ -31,20 +32,25 @@
                     <StackLayout Orientation="Horizontal">
                         <StackLayout HorizontalOptions="FillAndExpand">
                             <Label Text="TOTAL HORAS EXTRAS" 
-                       TextColor="White" FontSize="Subtitle"
-                       HorizontalTextAlignment="Center" 
-                       FontAttributes="Bold"/>
+                                   TextColor="White" FontSize="Subtitle"
+                                   HorizontalTextAlignment="Center" 
+                                   FontAttributes="Bold"/>
 
                             <Label x:Name="lbl_hrsExtra" Text="00:00" TextColor="White" 
-                            FontSize="50" FontAttributes="Bold" 
-                            HorizontalTextAlignment="Center" />
+                                   FontSize="50" FontAttributes="Bold" 
+                                   HorizontalTextAlignment="Center" />
                         </StackLayout>
-                        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="Center" >
-                            <ImageButton x:Name="icon" Source="refreshing_ico" WidthRequest="100"
-                                     BackgroundColor="Transparent" Clicked="Icon_Clicked" />
-                            <ff:CachedImage x:Name="gif" Source="refreshing.gif" 
-                                        WidthRequest="50" IsVisible="False" TranslationX="-10"/>
+                        
+                        <!-- REFRESH -->
+                        <StackLayout HorizontalOptions="FillAndExpand" 
+                                     VerticalOptions="Center" WidthRequest="100" >
+                            <ImageButton x:Name="btn_refresh" Source="refreshing_ico" 
+                                     BackgroundColor="Transparent" Clicked="Btn_refresh_Clicked" />
+                            <ff:CachedImage x:Name="refreshing" Source="refreshing.gif" 
+                                        IsVisible="False" WidthRequest="60"
+                                        Margin="0,0,0,-7"/>
                         </StackLayout>
+                        
                     </StackLayout>
                 </StackLayout>
 
@@ -56,11 +62,13 @@
 
                     <!-- Frame de ultima atualização -->
                     <StackLayout VerticalOptions="CenterAndExpand" Margin="0,-30,0,20">
-                        <Label Text="Ultima atualização em 00/00/0000 00:00:00" TextColor="White" FontSize="Micro" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
+                        <Label Text="Ultima atualização em 00/00/0000 00:00:00" 
+                               TextColor="White" FontSize="Micro" FontAttributes="Bold"
+                               HorizontalTextAlignment="Center" x:Name="lbl_ultimaAtualizacao"/>
                     </StackLayout>
 
                     <!-- Carousel View -->
-                    <controls:CarouselViewControl x:Name="CV" ItemsSource="{Binding People}" 
+                    <controls:CarouselViewControl x:Name="Infos" ItemsSource="{Binding infosCarouselList}" 
                                               HeightRequest="200" HorizontalOptions="CenterAndExpand" 
                                               VerticalOptions="StartAndExpand" Margin="10"
                                               ShowIndicators="True" IndicatorsShape="Circle"
@@ -69,14 +77,19 @@
                             <DataTemplate>
                                 <Frame BorderColor="LightGray" CornerRadius="10" HasShadow="False">
                                     <Grid>
-                                        <StackLayout Grid.Column="0" Grid.Row="0" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand">
-                                            <Label Text="{Binding}" FontSize="Subtitle" 
+                                        <StackLayout Grid.Column="0" Grid.Row="0" 
+                                                     HorizontalOptions="StartAndExpand"
+                                                     VerticalOptions="CenterAndExpand">
+                                            <Label Text="{Binding Title}" FontSize="Subtitle" 
                                                    HorizontalOptions="StartAndExpand" 
-                                                   VerticalOptions="CenterAndExpand" />
+                                                   VerticalOptions="CenterAndExpand"
+                                                   FontAttributes="Bold" 
+                                                   HorizontalTextAlignment="Center"/>
                                             <Label Grid.Column="1" Grid.Row="1" 
                                                    HorizontalOptions="StartAndExpand" 
                                                    VerticalOptions="CenterAndExpand" 
-                                                   Text="{Binding}" FontSize="Title"/>
+                                                   Text="{Binding Value}" FontSize="Title"
+                                                   HorizontalTextAlignment="Center"/>
                                         </StackLayout>
                                     </Grid>
                                 </Frame>
@@ -87,13 +100,14 @@
 
                 <!-- BOTÃO ADD -->
                 <StackLayout VerticalOptions="EndAndExpand" 
-                             HorizontalOptions="Center" >
-                    <ImageButton Source="add" TranslationY="-8" 
-                                 BackgroundColor="Transparent" 
-                                 Clicked="ImageButton_Clicked_1" />
+                             HorizontalOptions="Center">
+                    <ImageButton x:Name="btn_novo" Source="novo" WidthRequest="70" 
+                                 BackgroundColor="Transparent"
+                                 Margin="0,0,0,15"
+                                 Clicked="Btn_novo_Clicked" />
                 </StackLayout>
-
             </StackLayout>
+            
         </ContentPage.Content>
     </ContentPage>
     
@@ -103,7 +117,7 @@
             <Label Text="Sou page de histórico"/>
         </ContentPage.Content>
     </ContentPage>
-    
+     
     <!-- CONFIGURAÇÕES -->
     <ContentPage x:Name="tab_config" Title="Configurações" IconImageSource="configuracao" >
         <ContentPage.Content>

@@ -35,12 +35,13 @@
                             FontSize="50" FontAttributes="Bold" 
                             HorizontalTextAlignment="Center" />
                     </StackLayout>
-                    <AbsoluteLayout HorizontalOptions="FillAndExpand" VerticalOptions="Center">
-                        <ImageButton x:Name="icon" Source="refreshing_ico" WidthRequest="100"
-                                     BackgroundColor="Transparent" Clicked="ImageButton_Clicked"/>
+                    <StackLayout HorizontalOptions="FillAndExpand" 
+                                 VerticalOptions="Center" WidthRequest="100">
+                        <ImageButton x:Name="icon" Source="refreshing_ico" 
+                                     BackgroundColor="Red" Clicked="Icon_Clicked" />
                         <ff:CachedImage x:Name="gif" Source="refreshing.gif" 
-                                        WidthRequest="50" IsVisible="False"/>
-                    </AbsoluteLayout>
+                                        IsVisible="False" TranslationX="-10" />
+                    </StackLayout>
                 </StackLayout>
             </StackLayout>
 
@@ -54,6 +55,10 @@
                 <StackLayout VerticalOptions="CenterAndExpand" Margin="-10">
                     <Label Text="Ultima atualização em 00/00/0000 00:00:00" TextColor="White" FontSize="Small" Margin="0,0,0,0" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
                 </StackLayout>
+
+                <Label Text="teste" Margin="0,0,0,10"/>
+
+                <Button Text="Testar Popup" BackgroundColor="Gray" TextColor="MediumBlue" Clicked="Button_Clicked"/>
 
                 <!-- Carousel View -->
                 <!--<controls:CarouselViewControl x:Name="CV" ItemsSource="{Binding People}" 
@@ -78,8 +83,7 @@
 
             <!-- Events -->
             <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Orientation="Horizontal" >
-                <!--<ImageButton Source="add" Clicked="ImageButton_Clicked_1"/>-->
-                <!--<Button ImageSource="add" Text="Adicionar Ponto" BackgroundColor="Transparent"/>-->
+                <!--<ImageButton Source="novo" Clicked="ImageButton_Clicked_1" WidthRequest="100"/>-->
             </StackLayout>
 
         </StackLayout>

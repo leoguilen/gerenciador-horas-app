@@ -1,9 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using Polly;
+using Newtonsoft.Json;
 using System.Net.Http;
 using ManagerHours._Util;
 using System.Threading.Tasks;
 using ManagerHours.Model;
 using ManagerHours.Interfaces;
+using System.Diagnostics;
+using System;
 
 namespace ManagerHours.Implementation
 {
@@ -27,17 +30,26 @@ namespace ManagerHours.Implementation
 
             try
             {
-                response = await _client.GetAsync($"{_client.BaseAddress + _pathServiceRow}/{date}");
+                var result = await Policy.Handle<HttpRequestException>()
+                    .OrResult<HttpResponseMessage>(r => (int)r.StatusCode != 200)
+                    .RetryAsync(3)
+                    .ExecuteAsync(async () => 
+                    {
+                        response = await _client.GetAsync($"{_client.BaseAddress + _pathServiceRow}/{date}");
+                        return response;
+                    });
 
-                if (response.IsSuccessStatusCode)
+                if (result.IsSuccessStatusCode)
                 {
-                    var result_response = await response.Content.ReadAsStringAsync();
+                    var result_response = await result.Content.ReadAsStringAsync();
                     rowValue = JsonConvert.DeserializeObject<Row>(result_response);
                 }
                 else
                 {
-                    throw new HttpRequestException($"Erro na requisição ao serviço. Requisição retornou com o status '{response.StatusCode}'");
+                    throw new HttpRequestException($"Erro na requisição ao serviço. Requisição retornou com o status '{result.StatusCode}'");
                 }
+
+                result.Dispose();
             }
             catch
             {
@@ -46,6 +58,7 @@ namespace ManagerHours.Implementation
             finally
             {
                 response.Dispose();
+                
             }
 
             return rowValue;
@@ -58,17 +71,27 @@ namespace ManagerHours.Implementation
 
             try
             {
-                response = await _client.GetAsync(_client.BaseAddress + _pathServiceRows);
+                var result = await Policy.Handle<HttpRequestException>()
+                   .OrResult<HttpResponseMessage>(r => (int)r.StatusCode != 200)
+                   .WaitAndRetryAsync(3, i => TimeSpan.FromSeconds(10))
+                   .ExecuteAsync(async () =>
+                   {
+                       response = await _client.GetAsync(_client.BaseAddress + _pathServiceRows);
+                       Debug.WriteLine($"{ DateTime.Now} - Enviando requisição ao servidor");
+                       return response;
+                   });
 
-                if (response.IsSuccessStatusCode)
+                if (result.IsSuccessStatusCode)
                 {
-                    var result_response = await response.Content.ReadAsStringAsync();
+                    var result_response = await result.Content.ReadAsStringAsync();
                     rowsValues = JsonConvert.DeserializeObject<Rows>(result_response);
                 }
                 else
                 {
-                    throw new HttpRequestException($"Erro na requisição ao serviço. Requisição retornou com o status '{response.StatusCode}'");
+                    throw new HttpRequestException($"Erro na requisição ao serviço. Requisição retornou com o status '{result.StatusCode}'");
                 }
+
+                result.Dispose();
             }
             catch
             {

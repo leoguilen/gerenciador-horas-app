@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rg.Plugins.Popup.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,7 +25,7 @@ namespace ManagerHours.View
             //};
             //CV.BindingContext = this;
         }
-        int i = 0;
+
         private async void ImageButton_Clicked(object sender, EventArgs e)
         {
             icon.IsVisible = false;
@@ -34,6 +35,16 @@ namespace ManagerHours.View
 
             gif.IsVisible = false;
             icon.IsVisible = true;
+        }
+
+        private async void Button_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushPopupAsync(new PopupSample());
+        }
+
+        private void Icon_Clicked(object sender, EventArgs e)
+        {
+
         }
     }
 }

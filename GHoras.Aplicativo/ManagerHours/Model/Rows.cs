@@ -53,6 +53,9 @@ namespace ManagerHours.Model
         [JsonProperty(PropertyName = "data_15")]
         public Row Data_15 { get; set; }
 
+        [JsonProperty(PropertyName = "data_17")]
+        public Row Data_16 { get; set; }
+
         [JsonProperty(PropertyName = "data_16")]
         public Row Data_17 { get; set; }
 
@@ -63,6 +66,9 @@ namespace ManagerHours.Model
         public Row Data_19 { get; set; }
 
         [JsonProperty(PropertyName = "data_20")]
+        public Row Data_20 { get; set; }
+
+        [JsonProperty(PropertyName = "data_21")]
         public Row Data_21 { get; set; }
 
         [JsonProperty(PropertyName = "data_22")]
@@ -97,5 +103,6 @@ namespace ManagerHours.Model
 
         [JsonProperty(PropertyName = "total_horas_extras")]
         public DateTime TotalHorasExtras { get; set; }
+
     }
 }

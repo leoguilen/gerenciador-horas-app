@@ -17,14 +17,22 @@ namespace ManagerHours.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(savedInstanceState);
+            InitializeRenderers(savedInstanceState);
 
             global::Xamarin.Forms.Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental" });
-            CachedImageRenderer.Init(false);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            CarouselViewRenderer.Init();
+            
             LoadApplication(new App());
         }
+
+        public void InitializeRenderers(Bundle bundle)
+        {
+            CachedImageRenderer.Init(false);
+            CarouselViewRenderer.Init();
+            Rg.Plugins.Popup.Popup.Init(this,bundle);
+        }
+
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
