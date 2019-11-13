@@ -8,42 +8,73 @@
     <ContentPage.Content>
         <ScrollView>
             <StackLayout>
-                <StackLayout VerticalOptions="FillAndExpand" 
-                        HorizontalOptions="CenterAndExpand">
-                    <Label HorizontalTextAlignment="Center">Get Row</Label>
-                    <Button x:Name="btn_teste" Clicked="Btn_teste_Clicked"
-                        Text="Teste estado serviço"></Button>
-                    <Button x:Name="btn_teste2" Clicked="Btn_teste2_Clicked" 
-                        Text="Teste pegar valor linha"></Button>
-                    <Button x:Name="btn_teste3" Clicked="Btn_teste3_Clicked" 
-                        Text="Teste pegar valores linhas"></Button>
-                    <Button x:Name="btn_teste4" Clicked="Btn_teste4_Clicked" 
-                        Text="Teste pegar infos linha por id"></Button>
-                    <Button x:Name="btn_teste5" Clicked="Btn_teste5_Clicked" 
-                        Text="Teste pegar infos linha por data"></Button>
+                
+                <!-- Parte dos filtros -->
+                <StackLayout VerticalOptions="StartAndExpand"
+                             HorizontalOptions="Fill">
+                    <Frame BackgroundColor="#2C3E50">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" 
+                                     VerticalOptions="StartAndExpand">
+                            <StackLayout Orientation="Vertical" >
+                                <StackLayout Orientation="Horizontal">
+                                    <CheckBox Color="White"/>
+                                    <Label Text="Buscar por data" TextColor="WhiteSmoke" 
+                                           VerticalTextAlignment="Center"/>
+                                </StackLayout>
+                                <DatePicker Format="dd-MM" TextColor="WhiteSmoke" 
+                                            WidthRequest="50" IsEnabled="False"/>
+                            </StackLayout>
+                            <StackLayout Orientation="Vertical" TranslationX="15">
+                                <StackLayout Orientation="Horizontal">
+                                    <CheckBox Color="White"/>
+                                    <Label Text="Só com horas extras" TextColor="WhiteSmoke" 
+                                           VerticalTextAlignment="Center"/>
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal">
+                                    <CheckBox Color="White"/>
+                                    <Label Text="Ordenar por saída mais tarde" TextColor="WhiteSmoke" 
+                                       VerticalTextAlignment="Center"/>
+                                </StackLayout>
+                            </StackLayout>
+                        </StackLayout>
+                    </Frame>
                 </StackLayout>
-                <StackLayout VerticalOptions="FillAndExpand" 
-                        HorizontalOptions="CenterAndExpand">
-                    <Label HorizontalTextAlignment="Center">Get Infos</Label>
-                    <Button x:Name="btn_teste6" Clicked="Btn_teste6_Clicked" 
-                        Text="Teste Pegar Infos Planilha"></Button>
-                    <Button x:Name="btn_teste7" Clicked="Btn_teste7_Clicked" 
-                        Text="Teste Pegar Infos Atualizacao Planilha"></Button>
+
+                <!-- Parte dos históricos -->
+                <StackLayout>
+                    <ListView x:Name="listHistorico" IsGroupingEnabled="True"
+                              GroupDisplayBinding="{Binding Mes}"
+                              HorizontalScrollBarVisibility="Always"
+                              ItemTapped="ListHistorico_ItemTapped"
+                              RowHeight="65">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <StackLayout Orientation="Horizontal">
+                                        <StackLayout Orientation="Vertical"
+                                                     Padding="10">
+                                            <StackLayout Orientation="Horizontal">
+                                                <Image Source="indic_verde" WidthRequest="10" IsVisible="{Binding IndicVerde}"/>
+                                                <Image Source="indic_azul" WidthRequest="10" IsVisible="{Binding IndicAzul}"/>
+                                                <Label Text="{Binding Saida}" FontAttributes="Bold"/>
+                                            </StackLayout>
+                                            <Label Text="Saída"/>
+                                        </StackLayout>
+                                        <StackLayout Orientation="Vertical" 
+                                                     HorizontalOptions="EndAndExpand"
+                                                     Padding="10">
+                                            <Label Text="{Binding Data}" 
+                                                   HorizontalTextAlignment="Center" 
+                                                   FontAttributes="Bold"/>
+                                            <Label Text="{Binding Status}" TextColor="{Binding CorStatus}"/>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </StackLayout>
-                <StackLayout VerticalOptions="FillAndExpand" 
-                        HorizontalOptions="CenterAndExpand">
-                    <Label HorizontalTextAlignment="Center">Send Date</Label>
-                    <Button x:Name="btn_teste8" Clicked="Btn_teste8_Clicked" 
-                        Text="Teste Enviar Data"></Button>
-                    <Button x:Name="btn_teste9" Clicked="Btn_teste9_Clicked" 
-                        Text="Teste Enviar Observacao"></Button>
-                </StackLayout>
-                <StackLayout VerticalOptions="FillAndExpand" 
-                        HorizontalOptions="CenterAndExpand">
-                    <Label HorizontalTextAlignment="Center">Delete Date</Label>
-                    <Button x:Name="btn_teste10" Clicked="Btn_teste10_Clicked" 
-                        Text="Teste Deletar Data"></Button>
-                </StackLayout>
+                
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

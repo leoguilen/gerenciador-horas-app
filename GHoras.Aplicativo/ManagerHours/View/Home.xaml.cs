@@ -1,12 +1,16 @@
-﻿using ManagerHours._Util;
-using ManagerHours.Model;
-using ManagerHours.Services;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Xamarin.Forms;
+using ManagerHours.Dtos;
+using ManagerHours.Model;
 using Xamarin.Forms.Xaml;
+using ManagerHours._Util;
+using ManagerHours.Services;
+using System.Threading.Tasks;
+using ManagerHours.View.Popup;
+using System.Collections.Generic;
+using Rg.Plugins.Popup.Extensions;
+using System.Collections.ObjectModel;
 
 namespace ManagerHours.View
 {
@@ -15,19 +19,16 @@ namespace ManagerHours.View
     {
         private GetInfo getInfo;
         private GetRow getRow;
-        private RemoveDate removeDate;
-        private SendDate sendDate;
         private readonly double valorHoraExtras = 10.50;
         public List<Carousel> infosCarouselList { get; set; }
-
+        private ObservableCollection<HistoricoPonto> histPonto { get; set; }
+        private HistoricoPonto pontos;
         public Home()
         {
             InitializeComponent();
 
             getInfo = new GetInfo();
             getRow = new GetRow();
-            removeDate = new RemoveDate();
-            sendDate = new SendDate();
 
             CarregarValores();
         }
@@ -36,6 +37,7 @@ namespace ManagerHours.View
         {
             btn_refresh.IsVisible = false;
             refreshing.IsVisible = true;
+            Infos.BindingContext = null;
 
             var rowsValues = Task.FromResult(await getRow.GetRowsAsync()).GetAwaiter();
 
@@ -55,9 +57,9 @@ namespace ManagerHours.View
             }
         }
 
-        private void Btn_novo_Clicked(object sender, EventArgs e)
+        private async void Btn_novo_Clicked(object sender, EventArgs e)
         {
-
+            await Navigation.PushPopupAsync(new ConfirmaPontoPopup());
         }
 
         private async void CarregarValores()
@@ -144,13 +146,13 @@ namespace ManagerHours.View
         {
             string[] dataSplited = horasExtras.ToLongTimeString().Split(':');
             string dataFormated = $"{dataSplited[0]},{dataSplited[1]}";
-            double dataToDouble = double.Parse(dataFormated); 
+            double dataToDouble = double.Parse(dataFormated);
             double calcExtrasValor = valorHoraExtras * dataToDouble;
 
             if (calcExtrasValor == 0)
                 return "-";
 
-            return $"R$ {Math.Round(calcExtrasValor,2)}";
+            return $"R$ {Math.Round(calcExtrasValor, 2)}";
         }
 
         private string SaidaMaisTarde(Rows rows)
@@ -172,30 +174,163 @@ namespace ManagerHours.View
         {
             List<DateTime> listaDeSaidas = new List<DateTime>();
 
-            foreach (Row row in rows.RowsInList().Where(r => r.Saida != null))
+            var result = rows.RowsInList().Where(r => r.Saida != null);
+
+            if (result.Count() > 0)
             {
-                listaDeSaidas.Add(row.Saida.Value);
+                foreach (Row row in result)
+                {
+                    listaDeSaidas.Add(row.Saida.Value);
+                }
+            }
+            else
+            {
+                return "-";
             }
 
-            double totalHorasSaida = 0;
             int qtdeSaidas = listaDeSaidas.Count;
+            TimeSpan mediaHoraCalc;
 
             foreach (DateTime saida in listaDeSaidas)
             {
-                string[] dataSplited = saida.ToLongTimeString().Split(':');
-                string dataFormated = $"{dataSplited[0]},{dataSplited[1]}";
-                double dataToDouble = double.Parse(dataFormated);
-                totalHorasSaida = totalHorasSaida + dataToDouble;
+                TimeSpan t1 = new TimeSpan(saida.Ticks);
+                mediaHoraCalc += t1;
             }
 
-            double calcMediaHoraSaida = totalHorasSaida / qtdeSaidas;
-            string[] partesHoraMedia = calcMediaHoraSaida.ToString().Split(',');
-            DateTime mediaHoraSaida = DateTime.FromOADate(calcMediaHoraSaida);
+            long mediaCalculada = mediaHoraCalc.Ticks / qtdeSaidas;
 
-            if (mediaHoraSaida.Hour == 0 && mediaHoraSaida.Minute == 0)
-                return "-";
+            TimeSpan horaMedia = new TimeSpan(mediaCalculada);
 
-            return $"{mediaHoraSaida.ToLongTimeString()}";
+            return $"{horaMedia.Hours}:{horaMedia.Minutes}:{horaMedia.Seconds}";
+        }
+
+        private async void Tab_hist_Appearing(object sender, EventArgs e)
+        {
+            histPonto = new ObservableCollection<HistoricoPonto>();
+
+            await Navigation.PushPopupAsync(new LoaderInserindoNovoPontoPopup("",DateTime.Now,false,true),true);
+
+            var result = Task.FromResult(await getRow.GetRowsAsync());
+
+            if (result.IsCompleted)
+                await Navigation.PopPopupAsync();
+
+            List<Row> rows = result.Result.RowsInList();
+
+            pontos = new HistoricoPonto() { Mes = $"Mês: {result.Result.Mes}" };
+
+            foreach (var ponto in rows)
+            {
+                bool indicAzul, indicVerde;
+                string status, corStatus, saida;
+                string data = ponto.Data;
+
+                if (ponto.Entrada.HasValue && ponto.SaidaAlmoco.HasValue 
+                    && ponto.EntradaAlmoco.HasValue && ponto.Saida.HasValue)
+                {
+                    saida = ponto.Saida.Value.ToLongTimeString();
+
+                    string[] splitSaida = saida.Split(':');
+
+                    int hora = int.Parse(splitSaida[0]);
+
+                    if (hora >= 18)
+                    {
+                        indicAzul = false;
+                        indicVerde = true;
+                        status = "Com Horas Extras";
+                        corStatus = "#0F9D58";
+                    }
+                    else
+                    {
+                        indicAzul = true;
+                        indicVerde = false;
+                        status = "Horas Normais";
+                        corStatus = "#0366D6";
+                    }
+                } else {
+                    saida = "-";
+                    indicAzul = false;
+                    indicVerde = false;
+                    status = "Sem Valor";
+                    corStatus = "#9FA1A4";
+                }
+
+                pontos.Add(new PontoDto { Data = data, Saida = saida, IndicAzul = indicAzul, IndicVerde = indicVerde, Status = status, CorStatus = corStatus });
+            }
+
+            histPonto.Add(pontos);
+            listHistorico.ItemsSource = histPonto;
+        }
+
+        private async void ListHistorico_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            var dataItem = e.Item as PontoDto;
+
+            await Navigation.PushPopupAsync(new MostraDetalhesPontoPopup(dataItem.Data));
+        }
+
+        private void CkbData_CheckedChanged(object sender, CheckedChangedEventArgs e)
+        {
+            if (e.Value == true) {
+                filtro_dt.IsEnabled = true;
+
+            } else {
+                filtro_dt.IsEnabled = false;
+                listHistorico.BeginRefresh();
+                listHistorico.ItemsSource = histPonto;
+                listHistorico.EndRefresh();
+            }
+        }
+
+        private void Filtro_dt_DateSelected(object sender, DateChangedEventArgs e)
+        {
+            string[] splitDtSelecionada = e.NewDate.ToShortDateString().Split('/');
+            string dtSelecionada = $"{splitDtSelecionada[0]}/{splitDtSelecionada[1]}";
+            
+            listHistorico.BeginRefresh();
+
+            listHistorico.ItemsSource = histPonto.Select(p => p.Where(pt => pt.Data.Contains(dtSelecionada)));
+
+            listHistorico.EndRefresh();
+        }
+
+        private void CkbHrsExtras_CheckedChanged(object sender, CheckedChangedEventArgs e)
+        {
+            listHistorico.BeginRefresh();
+
+            if (e.Value == true) {
+                if (ckbOrdSaidaTarde.IsChecked)
+                    listHistorico.ItemsSource = histPonto.Select(p => p.Where(pt => pt.IndicVerde == true).OrderByDescending(pt => pt.Saida));
+                else
+                    listHistorico.ItemsSource = histPonto.Select(p => p.Where(pt => pt.IndicVerde == true));
+            } else {
+                if (ckbOrdSaidaTarde.IsChecked)
+                    listHistorico.ItemsSource = histPonto.Select(p => p.OrderByDescending(pt => pt.Saida));
+                else
+                    listHistorico.ItemsSource = histPonto;
+            }
+
+            listHistorico.EndRefresh();
+        }
+
+        private void CkbOrdSaidaTarde_CheckedChanged(object sender, CheckedChangedEventArgs e)
+        {
+            listHistorico.BeginRefresh();
+
+            if (e.Value == true) {
+                if(ckbHrsExtras.IsChecked)
+                    listHistorico.ItemsSource = histPonto.Select(p => p.OrderByDescending(pt => pt.Saida).Where(pt => pt.IndicVerde == true));
+                else 
+                    listHistorico.ItemsSource = histPonto.Select(p => p.OrderByDescending(pt => pt.Saida));
+            } else {
+                if(ckbHrsExtras.IsChecked)
+                    listHistorico.ItemsSource = histPonto.Select(p => p.Where(pt => pt.IndicVerde == true));
+                else
+                    listHistorico.ItemsSource = histPonto;
+            }
+
+            listHistorico.EndRefresh();
         }
     }
 }

@@ -36,6 +36,7 @@ namespace ManagerHours.Implementation
                     .ExecuteAsync(async () => 
                     {
                         response = await _client.GetAsync($"{_client.BaseAddress + _pathServiceRow}/{date}");
+                        Debug.WriteLine($"{ DateTime.Now} - Enviando requisição ao servidor");
                         return response;
                     });
 

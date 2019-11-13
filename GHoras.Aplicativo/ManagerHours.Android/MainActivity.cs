@@ -5,6 +5,7 @@ using Android.OS;
 using Android.Runtime;
 using CarouselView.FormsPlugin.Android;
 using FFImageLoading.Forms.Platform;
+using Plugin.CurrentActivity;
 
 namespace ManagerHours.Droid
 {
@@ -30,6 +31,7 @@ namespace ManagerHours.Droid
         {
             CachedImageRenderer.Init(false);
             CarouselViewRenderer.Init();
+            CrossCurrentActivity.Current.Init(this, bundle);
             Rg.Plugins.Popup.Popup.Init(this,bundle);
         }
 

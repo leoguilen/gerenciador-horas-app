@@ -6,7 +6,8 @@
              xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
              xmlns:controls="clr-namespace:CarouselView.FormsPlugin.Abstractions;assembly=CarouselView.FormsPlugin.Abstractions"
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-             android:TabbedPage.ToolbarPlacement="Bottom"
+            xmlns:controls1="http://xamarin.com/schemas/2014/forms"
+            android:TabbedPage.ToolbarPlacement="Bottom"
              android:TabbedPage.IsSwipePagingEnabled="False"             
              mc:Ignorable="d"
              x:Class="ManagerHours.View.Home">
@@ -67,7 +68,7 @@
                                HorizontalTextAlignment="Center" x:Name="lbl_ultimaAtualizacao"/>
                     </StackLayout>
 
-                    <!-- Carousel View -->
+                    <!-- Informações em slides -->
                     <controls:CarouselViewControl x:Name="Infos" ItemsSource="{Binding infosCarouselList}" 
                                               HeightRequest="200" HorizontalOptions="CenterAndExpand" 
                                               VerticalOptions="StartAndExpand" Margin="10"
@@ -112,9 +113,89 @@
     </ContentPage>
     
     <!-- HISTÓRICO -->
-    <ContentPage x:Name="tab_hist" Title="Histórico" IconImageSource="historico" >
+    <ContentPage x:Name="tab_hist" Title="Histórico" IconImageSource="historico" Appearing="Tab_hist_Appearing">
         <ContentPage.Content>
-            <Label Text="Sou page de histórico"/>
+            <ScrollView>
+                <StackLayout>
+
+                    <!-- Parte dos filtros -->
+                    <StackLayout VerticalOptions="StartAndExpand"
+                             HorizontalOptions="Fill">
+                        <Frame BackgroundColor="#2C3E50">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" 
+                                     VerticalOptions="StartAndExpand">
+                                
+                                <!-- Filtro de data -->
+                                <StackLayout Orientation="Vertical" >
+                                    <StackLayout Orientation="Horizontal">
+                                        <CheckBox x:Name="ckbData" Color="White" CheckedChanged="CkbData_CheckedChanged"/>
+                                        <Label Text="Buscar por data" TextColor="WhiteSmoke" 
+                                           VerticalTextAlignment="Center"/>
+                                    </StackLayout>
+                                    <DatePicker x:Name="filtro_dt" Format="dd-MM" 
+                                                TextColor="WhiteSmoke" 
+                                                DateSelected="Filtro_dt_DateSelected"
+                                                WidthRequest="50" IsEnabled="False"/>
+                                </StackLayout>
+                                
+                                <StackLayout Orientation="Vertical">
+                                    <!-- Filtro de horas extras -->
+                                    <StackLayout Orientation="Horizontal">
+                                        <CheckBox x:Name="ckbHrsExtras" Color="White" CheckedChanged="CkbHrsExtras_CheckedChanged"/>
+                                        <Label Text="Só com horas extras" TextColor="WhiteSmoke" 
+                                           VerticalTextAlignment="Center"/>
+                                    </StackLayout>
+
+                                    <!-- Ordernar por saída mais tarde -->
+                                    <StackLayout Orientation="Horizontal">
+                                        <CheckBox x:Name="ckbOrdSaidaTarde" Color="White" CheckedChanged="CkbOrdSaidaTarde_CheckedChanged"/>
+                                        <Label Text="Ordenar por saída mais tarde" TextColor="WhiteSmoke" 
+                                       VerticalTextAlignment="Center"/>
+                                    </StackLayout>
+                                </StackLayout>
+                                
+                            </StackLayout>
+                        </Frame>
+                    </StackLayout>
+
+                    <!-- Parte dos históricos -->
+                    <StackLayout>
+                        <ListView x:Name="listHistorico" IsGroupingEnabled="True"
+                                  GroupDisplayBinding="{Binding Mes}"
+                                  HorizontalScrollBarVisibility="Always"
+                                  ItemTapped="ListHistorico_ItemTapped"
+                                  RowHeight="65">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <StackLayout Orientation="Horizontal">
+                                            <StackLayout Orientation="Vertical"
+                                                     Padding="10">
+                                                <StackLayout Orientation="Horizontal">
+                                                    <Image Source="indic_verde" WidthRequest="10" IsVisible="{Binding IndicVerde}"/>
+                                                    <Image Source="indic_azul" WidthRequest="10" IsVisible="{Binding IndicAzul}"/>
+                                                    <Label Text="{Binding Saida}" FontAttributes="Bold"/>
+                                                </StackLayout>
+                                                <Label Text="Saída"/>
+                                            </StackLayout>
+                                            <StackLayout Orientation="Vertical" 
+                                                     HorizontalOptions="EndAndExpand"
+                                                     Padding="10">
+                                                <Label Text="{Binding Data}" 
+                                                   HorizontalTextAlignment="End" 
+                                                   FontAttributes="Bold"/>
+                                                <Label Text="{Binding Status}" TextColor="{Binding CorStatus}" 
+                                                       HorizontalTextAlignment="End"/>
+                                            </StackLayout>
+                                        </StackLayout>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackLayout>
+
+                </StackLayout>
+            </ScrollView>
         </ContentPage.Content>
     </ContentPage>
      

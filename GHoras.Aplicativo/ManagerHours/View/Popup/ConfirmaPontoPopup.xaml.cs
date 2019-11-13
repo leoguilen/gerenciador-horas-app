@@ -1,19 +1,24 @@
-﻿using Rg.Plugins.Popup.Extensions;
-using System;
-using System.Threading.Tasks;
+﻿using System;
 using Xamarin.Forms.Xaml;
+using System.Threading.Tasks;
+using ManagerHours.View.Popup;
+using Rg.Plugins.Popup.Extensions;
 
 namespace ManagerHours.View
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ConfirmaPontoPopup : Rg.Plugins.Popup.Pages.PopupPage
     {
+        private readonly DateTime dateTimeCurrent = DateTime.Now;
+
         public ConfirmaPontoPopup()
         {
             InitializeComponent();
+
+            lbl_confirmText.Text = $"Confirmar o horário {dateTimeCurrent} como um novo evento de ponto?";
         }
 
-        private async void ImageButton_Clicked_1(object sender, EventArgs e)
+        private async void Btn_confirm_Clicked(object sender, EventArgs e)
         {
             btn_confirm.IsVisible = false;
             btn_confirm_actived.IsVisible = true;
@@ -23,15 +28,19 @@ namespace ManagerHours.View
             btn_confirm.IsVisible = true;
             btn_confirm_actived.IsVisible = false;
 
-            await Navigation.PushPopupAsync(new LoaderInserindoNovoPontoPopup(), true);
-
-            //await DisplayAlert("MENSAGEM", "Confirmado", "OK");
-
-            // TODO: Popup com loader e mensagem de confirmação após a inserção da data
+            if(dateTimeCurrent.Hour >= 17 || dateTimeCurrent.Hour >= 18) {
+                await Navigation.PushPopupAsync(new InserirObsPopup(dateTimeCurrent));
+            } else {
+                await Navigation.PushPopupAsync(new LoaderInserindoNovoPontoPopup(string.Empty,dateTimeCurrent,false));
+            }
         }
 
-        private async void ImageButton_Clicked_2(object sender, EventArgs e)
+        private async void CloseButton_Clicked(object sender, EventArgs e)
         {
+            await Navigation.PopPopupAsync(true);
+        }
+        private async void Btn_cancel_Clicked(object sender, EventArgs e)
+        { 
             btn_cancel.IsVisible = false;
             btn_cancel_actived.IsVisible = true;
 
@@ -40,13 +49,6 @@ namespace ManagerHours.View
             btn_cancel.IsVisible = true;
             btn_cancel_actived.IsVisible = false;
 
-            await DisplayAlert("MENSAGEM", "Operação Cancelada", "OK");
-
-            await Navigation.PopPopupAsync(true);
-        }
-
-        private async void ImageButton_Clicked(object sender, EventArgs e)
-        {
             await Navigation.PopPopupAsync(true);
         }
     }
