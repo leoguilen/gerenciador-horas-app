@@ -46,16 +46,19 @@ namespace ManagerHours.Model
         }
         public static DateTime LastEvent(this Row row)
         {
+            string[] partsData = row.Data.Split('/');
+            int dia = int.Parse(partsData[0]);
+            int mes = int.Parse(partsData[1]);
             DateTime? lastDateEvent = null;
 
             if (row.Entrada != null && row.SaidaAlmoco == null && row.EntradaAlmoco == null && row.Saida == null)
-                lastDateEvent = row.Entrada.Value;
+                lastDateEvent = new DateTime(2019, mes, dia, row.Entrada.Value.Hour, row.Entrada.Value.Minute, row.Entrada.Value.Second);
             else if (row.Entrada != null && row.SaidaAlmoco != null && row.EntradaAlmoco == null && row.Saida == null)
-                lastDateEvent = row.SaidaAlmoco.Value;
+                lastDateEvent = new DateTime(2019, mes, dia, row.SaidaAlmoco.Value.Hour, row.SaidaAlmoco.Value.Minute, row.SaidaAlmoco.Value.Second);
             else if (row.Entrada != null && row.SaidaAlmoco != null && row.EntradaAlmoco != null && row.Saida == null)
-                lastDateEvent = row.EntradaAlmoco.Value;
+                lastDateEvent = new DateTime(2019, mes, dia, row.EntradaAlmoco.Value.Hour, row.EntradaAlmoco.Value.Minute, row.EntradaAlmoco.Value.Second);
             else if (row.Entrada != null && row.SaidaAlmoco != null && row.EntradaAlmoco != null && row.Saida != null)
-                lastDateEvent = row.Saida.Value;
+                lastDateEvent = new DateTime(2019, mes, dia, row.Saida.Value.Hour, row.Saida.Value.Minute, row.Saida.Value.Second);
 
             return lastDateEvent.Value;
         }

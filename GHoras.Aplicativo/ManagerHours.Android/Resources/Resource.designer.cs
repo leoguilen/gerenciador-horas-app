@@ -11002,16 +11002,22 @@ namespace ManagerHours.Droid
 			public const int refresh_white = 2131165522;
 			
 			// aapt resource value: 0x7F070156
-			public const int salvo_ok = 2131165526;
+			public const int rmv_ponto = 2131165526;
 			
 			// aapt resource value: 0x7F070157
-			public const int tooltip_frame_dark = 2131165527;
+			public const int salvo_ok = 2131165527;
 			
 			// aapt resource value: 0x7F070158
-			public const int tooltip_frame_light = 2131165528;
+			public const int tooltip_frame_dark = 2131165528;
 			
 			// aapt resource value: 0x7F070159
-			public const int Up = 2131165529;
+			public const int tooltip_frame_light = 2131165529;
+			
+			// aapt resource value: 0x7F07015A
+			public const int trash = 2131165530;
+			
+			// aapt resource value: 0x7F07015B
+			public const int Up = 2131165531;
 			
 			static Drawable()
 			{

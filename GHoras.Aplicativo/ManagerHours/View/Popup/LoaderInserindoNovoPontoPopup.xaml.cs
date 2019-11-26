@@ -5,6 +5,7 @@ using Xamarin.Forms.Xaml;
 using ManagerHours.Services;
 using System.Threading.Tasks;
 using Rg.Plugins.Popup.Extensions;
+using ManagerHours._Util;
 
 namespace ManagerHours.View
 {
@@ -31,12 +32,11 @@ namespace ManagerHours.View
         private async void InserirValores(DateTime dtPonto)
         {
             string data = dtPonto.ToString("dd/MM");
-            //Evento env = new Evento().GetEventForTime(dtPonto);
-
+            
             var dtPontoValue = new DateValue
             {
                 Data = data,
-                Evento = Evento.saida.ToString(),
+                Evento = GetEvento.GetEventForTime(dtPonto).ToString(),
                 Hora = dtPonto.ToShortTimeString(),
                 Autor = "Leonardo Guilen",
             };
@@ -66,12 +66,11 @@ namespace ManagerHours.View
         {
             string data = dtPonto.ToString("dd/MM");
             string obs = messageObs;
-            //Evento env = new Evento().GetEventForTime(dtPonto);
 
             var dtPontoValue = new DateValue
             {
                 Data = data,
-                Evento = Evento.entrada.ToString(),
+                Evento = GetEvento.GetEventForTime(dtPonto).ToString(),
                 Hora = dtPonto.ToShortTimeString(),
                 Autor = "Leonardo Guilen",
             };

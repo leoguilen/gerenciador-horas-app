@@ -19,6 +19,7 @@ namespace ManagerHours.View
     {
         private GetInfo getInfo;
         private GetRow getRow;
+        private RemoveDate removeDate;
         private readonly double valorHoraExtras = 10.50;
         public List<Carousel> infosCarouselList { get; set; }
         private ObservableCollection<HistoricoPonto> histPonto { get; set; }
@@ -29,6 +30,7 @@ namespace ManagerHours.View
 
             getInfo = new GetInfo();
             getRow = new GetRow();
+            removeDate = new RemoveDate();
 
             CarregarValores();
         }
@@ -107,22 +109,26 @@ namespace ManagerHours.View
                 new Carousel()
                 {
                     Title = "Data do Último Ponto:",
-                    Value = UltimoPonto(rows)
+                    Value = UltimoPonto(rows),
+                    HasButton = true
                 },
                 new Carousel()
                 {
                     Title = "Valor Total das Horas Extras: ",
-                    Value = CalcularValorHorasExtras(DateTime.Parse(lbl_hrsExtra.Text))
+                    Value = CalcularValorHorasExtras(DateTime.Parse(lbl_hrsExtra.Text)),
+                    HasButton = false
                 },
                 new Carousel()
                 {
                     Title = "Saída mais tarde: ",
-                    Value = SaidaMaisTarde(rows)
+                    Value = SaidaMaisTarde(rows),
+                    HasButton = false
                 },
                 new Carousel()
                 {
                     Title = "Média do Horário de Saída: ",
-                    Value = MediaHoraDeSaida(rows)
+                    Value = MediaHoraDeSaida(rows),
+                    HasButton = false
                 }
             };
 
@@ -331,6 +337,65 @@ namespace ManagerHours.View
             }
 
             listHistorico.EndRefresh();
+        }
+
+        private async void Btn_rmvPonto_Clicked(object sender, EventArgs e)
+        {
+            string[] ultPonto = infosCarouselList[0].Value.Split('/');
+            string batchId = string.Empty;
+            bool remove = 
+                await DisplayAlert("Remover Ponto",$"Você realmente quer deletar esse ponto '{infosCarouselList[0].Value}'?", "Sim", "Não");
+
+            if (remove)
+            {
+                await Navigation.PushPopupAsync(new LoaderInserindoNovoPontoPopup("",DateTime.Now,false,true));
+                var rowDetails = Task.FromResult(await getRow.GetRowByDateAsync($"{ultPonto[0]}/{ultPonto[1]}"));
+
+                if (rowDetails.IsCompleted)
+                {
+                    var rowInfo = rowDetails.Result;
+                    batchId = rowInfo.BatchID;
+                }
+
+                var rowValues = Task.FromResult(await getRow.GetRowAsync($"{ultPonto[0]}/{ultPonto[1]}"));
+
+                if (rowValues.IsCompleted)
+                {
+                    var rowValue = rowValues.Result;
+
+                    if (rowValue.Entrada != null && rowValue.SaidaAlmoco == null
+                        && rowValue.EntradaAlmoco == null && rowValue.Saida == null)
+                    {
+                        batchId = batchId.Replace("C2", "C" + 3);
+                    }
+                    else if (rowValue.Entrada != null && rowValue.SaidaAlmoco != null
+                       && rowValue.EntradaAlmoco == null && rowValue.Saida == null)
+                    {
+                        batchId = batchId.Replace("C2", "C" + 4);
+                    }
+                    else if (rowValue.Entrada != null && rowValue.SaidaAlmoco != null
+                       && rowValue.EntradaAlmoco != null && rowValue.Saida == null)
+                    {
+                        batchId = batchId.Replace("C2", "C" + 5);
+                    }
+                    else if (rowValue.Entrada != null && rowValue.SaidaAlmoco != null
+                       && rowValue.EntradaAlmoco != null && rowValue.Saida != null)
+                    {
+                        batchId = batchId.Replace("C2", "C" + 6);
+                    }
+                }
+
+                var removePto = Task.FromResult(await removeDate.DeleteDateAsync(batchId));
+
+                if (removePto.IsCompleted)
+                {
+                    await Navigation.PopPopupAsync();
+                    await DisplayAlert("Sucesso", "Ponto excluido com sucesso", "OK");
+                }
+            } else {
+                return;
+            }
+
         }
     }
 }
