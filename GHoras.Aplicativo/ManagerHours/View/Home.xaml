@@ -133,7 +133,7 @@
                         <Frame BackgroundColor="#2C3E50">
                             <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" 
                                      VerticalOptions="StartAndExpand">
-                                
+
                                 <!-- Filtro de data -->
                                 <StackLayout Orientation="Vertical" >
                                     <StackLayout Orientation="Horizontal">
@@ -146,7 +146,7 @@
                                                 DateSelected="Filtro_dt_DateSelected"
                                                 WidthRequest="50" IsEnabled="False"/>
                                 </StackLayout>
-                                
+
                                 <StackLayout Orientation="Vertical">
                                     <!-- Filtro de horas extras -->
                                     <StackLayout Orientation="Horizontal">
@@ -162,7 +162,7 @@
                                        VerticalTextAlignment="Center"/>
                                     </StackLayout>
                                 </StackLayout>
-                                
+
                             </StackLayout>
                         </Frame>
                     </StackLayout>
@@ -207,12 +207,4 @@
             </ScrollView>
         </ContentPage.Content>
     </ContentPage>
-     
-    <!-- CONFIGURAÇÕES -->
-    <ContentPage x:Name="tab_config" Title="Configurações" IconImageSource="configuracao" >
-        <ContentPage.Content>
-            <Label Text="Sou a page de configuração"/>
-        </ContentPage.Content>
-    </ContentPage>
-
 </TabbedPage>
