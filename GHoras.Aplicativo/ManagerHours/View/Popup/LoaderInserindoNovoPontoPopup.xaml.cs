@@ -31,12 +31,13 @@ namespace ManagerHours.View
 
         private async void InserirValores(DateTime dtPonto)
         {
+            GetEvento getEvento = new GetEvento();
             string data = dtPonto.ToString("dd/MM");
             
             var dtPontoValue = new DateValue
             {
                 Data = data,
-                Evento = GetEvento.GetEventForTime(dtPonto).ToString(),
+                Evento = await Task.FromResult(await getEvento.GetEventForTime(dtPonto)),
                 Hora = dtPonto.ToShortTimeString(),
                 Autor = "Leonardo Guilen",
             };
@@ -51,7 +52,6 @@ namespace ManagerHours.View
                 await DisplayAlert("ERRO", $"Encontramos um problema ao salvar o seu ponto. Mais detalhes {ex.Message}", "OK");  
             }
 
-
             confirmLoader.IsVisible = false;
             confirmedImg.IsVisible = true;
 
@@ -64,13 +64,14 @@ namespace ManagerHours.View
 
         private async void InserirComObs(string messageObs, DateTime dtPonto)
         {
+            GetEvento getEvento = new GetEvento();
             string data = dtPonto.ToString("dd/MM");
             string obs = messageObs;
 
             var dtPontoValue = new DateValue
             {
                 Data = data,
-                Evento = GetEvento.GetEventForTime(dtPonto).ToString(),
+                Evento = getEvento.GetEventForTime(dtPonto).ToString(),
                 Hora = dtPonto.ToShortTimeString(),
                 Autor = "Leonardo Guilen",
             };
