@@ -17,11 +17,11 @@ namespace ManagerHours._Util
             string dataParam = $"{partsData[0]}/{partsData[1]}";
             int hrs = int.Parse(partsHora[0]);
 
-            if (hrs >= 21)
+            if (hrs >= 17)
                 ev = Evento.saida;
             else if (hrs >= 8 && hrs <= 9)
                 ev = Evento.entrada;
-            else /*if ((hrs >= 11 && hrs <= 14))*/ {
+            else {
                 var rowResult = await Task.FromResult(await getRow.GetRowAsync(dataParam));
 
                 if (rowResult.SaidaAlmoco != null)

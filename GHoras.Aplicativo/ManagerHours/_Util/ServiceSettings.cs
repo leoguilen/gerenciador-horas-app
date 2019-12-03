@@ -7,8 +7,8 @@ namespace ManagerHours._Util
 {
     public class ServiceSettings
     {
-        //private const string EnderecoBase = "http://192.168.75.42:15502/";
-        private const string EnderecoBase = "http://192.168.0.13:15520/";
+        private const string EnderecoBase = "http://192.168.75.42:15502/";
+        //private const string EnderecoBase = "http://192.168.0.13:15520/";
 
         public static HttpClient ServiceStartSettings()
         {

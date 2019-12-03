@@ -28,7 +28,7 @@ namespace ManagerHours.View
             btn_confirm.IsVisible = true;
             btn_confirm_actived.IsVisible = false;
 
-            if(dateTimeCurrent.Hour >= 21 || dateTimeCurrent.Hour >= 22) {
+            if(dateTimeCurrent.Hour >= 17 || dateTimeCurrent.Hour >= 18) {
                 await Navigation.PushPopupAsync(new InserirObsPopup(dateTimeCurrent));
             } else {
                 await Navigation.PushPopupAsync(new LoaderInserindoNovoPontoPopup(string.Empty,dateTimeCurrent,false));
