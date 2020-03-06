@@ -6,6 +6,7 @@ using ManagerHours.Services;
 using System.Threading.Tasks;
 using Rg.Plugins.Popup.Extensions;
 using ManagerHours._Util;
+using System.Threading;
 
 namespace ManagerHours.View
 {
@@ -84,10 +85,23 @@ namespace ManagerHours.View
 
             try
             {
-                var sendDataValue = Task.FromResult(await sendDate.PostDateValuesAsync(dtPontoValue)).GetAwaiter();
+                Parallel.Invoke(new ParallelOptions 
+                { 
+                    CancellationToken = CancellationToken.None, 
+                    MaxDegreeOfParallelism = 2, 
+                    TaskScheduler = null 
+                },
+                async () =>
+                {
+                    Task.FromResult(await sendDate.PostDateValuesAsync(dtPontoValue))
+                        .ConfigureAwait(false).GetAwaiter();
+                },
+                async () =>
+                {
+                    Task.FromResult(await sendDate.PostObsValuesAsync(obsValue))
+                        .ConfigureAwait(false).GetAwaiter();
+                });
 
-                sendDataValue.OnCompleted(async () => 
-                    Task.FromResult(await sendDate.PostObsValuesAsync(obsValue)).GetAwaiter());
             } catch (Exception ex) {
                 confirmLoader.IsVisible = false;
                 sendError.IsVisible = true;
