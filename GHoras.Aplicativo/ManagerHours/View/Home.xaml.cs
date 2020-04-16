@@ -1,16 +1,17 @@
-﻿using System;
-using System.Linq;
-using Xamarin.Forms;
+﻿using ManagerHours._Util;
+using ManagerHours.Dependencies;
 using ManagerHours.Dtos;
 using ManagerHours.Model;
-using Xamarin.Forms.Xaml;
-using ManagerHours._Util;
 using ManagerHours.Services;
-using System.Threading.Tasks;
 using ManagerHours.View.Popup;
-using System.Collections.Generic;
 using Rg.Plugins.Popup.Extensions;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 
 namespace ManagerHours.View
 {
@@ -24,13 +25,14 @@ namespace ManagerHours.View
         public List<Carousel> infosCarouselList { get; set; }
         private ObservableCollection<HistoricoPonto> histPonto { get; set; }
         private HistoricoPonto pontos;
+
         public Home()
         {
             InitializeComponent();
 
-            getInfo = new GetInfo();
-            getRow = new GetRow();
-            removeDate = new RemoveDate();
+            getInfo = new GetInfo(SpreadsheetServiceDependencies.Inject());
+            getRow = new GetRow(RowServiceDependencies.Inject());
+            removeDate = new RemoveDate(DateServiceDependencies.Inject());
 
             CarregarValores();
         }
@@ -140,7 +142,7 @@ namespace ManagerHours.View
             var linhaUltimoPonto = rows.RowsInList()
                                    .Where(r => r.Entrada != null);
 
-            if (linhaUltimoPonto.Count() == 0)
+            if (!linhaUltimoPonto.Any())
                 return "-";
 
             var ultimoPonto = linhaUltimoPonto.Last().LastEvent();
@@ -182,7 +184,7 @@ namespace ManagerHours.View
 
             var result = rows.RowsInList().Where(r => r.Saida != null);
 
-            if (result.Count() > 0)
+            if (result.Any())
             {
                 foreach (Row row in result)
                 {
@@ -214,7 +216,7 @@ namespace ManagerHours.View
         {
             histPonto = new ObservableCollection<HistoricoPonto>();
 
-            await Navigation.PushPopupAsync(new LoaderInserindoNovoPontoPopup("",DateTime.Now,false,true),true);
+            await Navigation.PushPopupAsync(new LoaderInserindoNovoPontoPopup("", DateTime.Now, false, true), true);
 
             var result = Task.FromResult(await getRow.GetRowsAsync());
 
@@ -231,7 +233,7 @@ namespace ManagerHours.View
                 string status, corStatus, saida;
                 string data = ponto.Data;
 
-                if (ponto.Entrada.HasValue && ponto.SaidaAlmoco.HasValue 
+                if (ponto.Entrada.HasValue && ponto.SaidaAlmoco.HasValue
                     && ponto.EntradaAlmoco.HasValue && ponto.Saida.HasValue)
                 {
                     saida = ponto.Saida.Value.ToLongTimeString();
@@ -254,7 +256,9 @@ namespace ManagerHours.View
                         status = "Horas Normais";
                         corStatus = "#0366D6";
                     }
-                } else {
+                }
+                else
+                {
                     saida = "-";
                     indicAzul = false;
                     indicVerde = false;
@@ -278,10 +282,13 @@ namespace ManagerHours.View
 
         private void CkbData_CheckedChanged(object sender, CheckedChangedEventArgs e)
         {
-            if (e.Value == true) {
+            if (e.Value)
+            {
                 filtro_dt.IsEnabled = true;
 
-            } else {
+            }
+            else
+            {
                 filtro_dt.IsEnabled = false;
                 listHistorico.BeginRefresh();
                 listHistorico.ItemsSource = histPonto;
@@ -293,7 +300,7 @@ namespace ManagerHours.View
         {
             string[] splitDtSelecionada = e.NewDate.ToShortDateString().Split('/');
             string dtSelecionada = $"{splitDtSelecionada[0]}/{splitDtSelecionada[1]}";
-            
+
             listHistorico.BeginRefresh();
 
             listHistorico.ItemsSource = histPonto.Select(p => p.Where(pt => pt.Data.Contains(dtSelecionada)));
@@ -305,12 +312,15 @@ namespace ManagerHours.View
         {
             listHistorico.BeginRefresh();
 
-            if (e.Value == true) {
+            if (e.Value)
+            {
                 if (ckbOrdSaidaTarde.IsChecked)
                     listHistorico.ItemsSource = histPonto.Select(p => p.Where(pt => pt.IndicVerde == true).OrderByDescending(pt => pt.Saida));
                 else
                     listHistorico.ItemsSource = histPonto.Select(p => p.Where(pt => pt.IndicVerde == true));
-            } else {
+            }
+            else
+            {
                 if (ckbOrdSaidaTarde.IsChecked)
                     listHistorico.ItemsSource = histPonto.Select(p => p.OrderByDescending(pt => pt.Saida));
                 else
@@ -324,13 +334,16 @@ namespace ManagerHours.View
         {
             listHistorico.BeginRefresh();
 
-            if (e.Value == true) {
-                if(ckbHrsExtras.IsChecked)
+            if (e.Value)
+            {
+                if (ckbHrsExtras.IsChecked)
                     listHistorico.ItemsSource = histPonto.Select(p => p.OrderByDescending(pt => pt.Saida).Where(pt => pt.IndicVerde == true));
-                else 
+                else
                     listHistorico.ItemsSource = histPonto.Select(p => p.OrderByDescending(pt => pt.Saida));
-            } else {
-                if(ckbHrsExtras.IsChecked)
+            }
+            else
+            {
+                if (ckbHrsExtras.IsChecked)
                     listHistorico.ItemsSource = histPonto.Select(p => p.Where(pt => pt.IndicVerde == true));
                 else
                     listHistorico.ItemsSource = histPonto;
@@ -343,12 +356,12 @@ namespace ManagerHours.View
         {
             string[] ultPonto = infosCarouselList[0].Value.Split('/');
             string batchId = string.Empty;
-            bool remove = 
-                await DisplayAlert("Remover Ponto",$"Você realmente quer deletar esse ponto '{infosCarouselList[0].Value}'?", "Sim", "Não");
+            bool remove =
+                await DisplayAlert("Remover Ponto", $"Você realmente quer deletar esse ponto '{infosCarouselList[0].Value}'?", "Sim", "Não");
 
             if (remove)
             {
-                await Navigation.PushPopupAsync(new LoaderInserindoNovoPontoPopup("",DateTime.Now,false,true));
+                await Navigation.PushPopupAsync(new LoaderInserindoNovoPontoPopup("", DateTime.Now, false, true));
                 var rowDetails = Task.FromResult(await getRow.GetRowByDateAsync($"{ultPonto[0]}/{ultPonto[1]}"));
 
                 if (rowDetails.IsCompleted)
@@ -392,7 +405,9 @@ namespace ManagerHours.View
                     await Navigation.PopPopupAsync();
                     await DisplayAlert("Sucesso", "Ponto excluido com sucesso", "OK");
                 }
-            } else {
+            }
+            else
+            {
                 return;
             }
 

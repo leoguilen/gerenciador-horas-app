@@ -1,8 +1,7 @@
-﻿using ManagerHours.Implementation;
-using ManagerHours.Interfaces;
-using System.Threading.Tasks;
+﻿using ManagerHours.Interfaces;
 using ManagerHours.Model;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace ManagerHours.Services
 {
@@ -10,9 +9,9 @@ namespace ManagerHours.Services
     {
         private readonly ISpreadsheetService _spreadsheetService;
 
-        public GetInfo()
+        public GetInfo(ISpreadsheetService spreadsheetService)
         {
-            _spreadsheetService = new SpreadsheetService();
+            _spreadsheetService = spreadsheetService;
         }
 
         public async Task<SpreadsheetInfo> GetSpreadsheetInfoAsync()

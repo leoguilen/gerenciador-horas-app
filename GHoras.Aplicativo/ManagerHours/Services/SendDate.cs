@@ -1,8 +1,7 @@
-﻿using ManagerHours.Implementation;
-using ManagerHours.Interfaces;
-using System.Threading.Tasks;
+﻿using ManagerHours.Interfaces;
 using ManagerHours.Model;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace ManagerHours.Services
 {
@@ -10,9 +9,9 @@ namespace ManagerHours.Services
     {
         private readonly IDateService _dateService;
 
-        public SendDate()
+        public SendDate(IDateService dateService)
         {
-            _dateService = new DateService();
+            _dateService = dateService;
         }
 
         public async Task<bool> PostDateValuesAsync(DateValue dateValue)

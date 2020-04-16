@@ -122,7 +122,9 @@
     </ContentPage>
     
     <!-- HISTÓRICO -->
-    <ContentPage x:Name="tab_hist" Title="Histórico" IconImageSource="historico" Appearing="Tab_hist_Appearing">
+    <ContentPage x:Name="tab_hist" Title="Histórico" 
+                 IconImageSource="historico" 
+                 Appearing="Tab_hist_Appearing">
         <ContentPage.Content>
             <ScrollView>
                 <StackLayout>

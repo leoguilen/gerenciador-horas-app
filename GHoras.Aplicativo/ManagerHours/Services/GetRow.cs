@@ -1,8 +1,7 @@
-﻿using ManagerHours.Implementation;
-using ManagerHours.Interfaces;
-using System.Threading.Tasks;
+﻿using ManagerHours.Interfaces;
 using ManagerHours.Model;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace ManagerHours.Services
 {
@@ -10,9 +9,9 @@ namespace ManagerHours.Services
     {
         private readonly IRowService _rowService;
 
-        public GetRow()
+        public GetRow(IRowService rowService)
         {
-            _rowService = new RowService();
+            _rowService = rowService;
         }
 
         public async Task<Row> GetRowAsync(string date)

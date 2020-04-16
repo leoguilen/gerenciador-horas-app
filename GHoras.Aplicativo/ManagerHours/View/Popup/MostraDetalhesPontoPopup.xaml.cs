@@ -1,4 +1,5 @@
-﻿using ManagerHours.Services;
+﻿using ManagerHours.Dependencies;
+using ManagerHours.Services;
 using Rg.Plugins.Popup.Extensions;
 using System.Threading.Tasks;
 using Xamarin.Forms.Xaml;
@@ -14,7 +15,7 @@ namespace ManagerHours.View.Popup
         {
             InitializeComponent();
 
-            getRow = new GetRow();
+            getRow = new GetRow(RowServiceDependencies.Inject());
 
             CarregaInformacoes(data);
         }

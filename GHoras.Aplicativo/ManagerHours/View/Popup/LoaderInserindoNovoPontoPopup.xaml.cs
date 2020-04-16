@@ -1,12 +1,12 @@
-﻿using System;
+﻿using ManagerHours.Dependencies;
 using ManagerHours.Enum;
 using ManagerHours.Model;
-using Xamarin.Forms.Xaml;
 using ManagerHours.Services;
-using System.Threading.Tasks;
 using Rg.Plugins.Popup.Extensions;
-using ManagerHours._Util;
+using System;
 using System.Threading;
+using System.Threading.Tasks;
+using Xamarin.Forms.Xaml;
 
 namespace ManagerHours.View
 {
@@ -19,9 +19,9 @@ namespace ManagerHours.View
         {
             InitializeComponent();
 
-            sendDate = new SendDate();
+            sendDate = new SendDate(DateServiceDependencies.Inject());
 
-            if(onlyLoading == false)
+            if (!onlyLoading)
             {
                 if (extra)
                     InserirComObs(messageObs, dtPonto);
@@ -32,25 +32,27 @@ namespace ManagerHours.View
 
         private async void InserirValores(DateTime dtPonto)
         {
-            GetEvento getEvento = new GetEvento();
             string data = dtPonto.ToString("dd/MM");
-            
+
             var dtPontoValue = new DateValue
             {
                 Data = data,
-                Evento = await Task.FromResult(await getEvento.GetEventForTime(dtPonto)),
+                Evento = dtPonto.GetEventForTime().Result,
                 Hora = dtPonto.ToShortTimeString(),
                 Autor = "Leonardo Guilen",
             };
 
             try
             {
-                var sendDataValue = Task.FromResult(await sendDate.PostDateValuesAsync(dtPontoValue)).GetAwaiter();
-            } catch (Exception ex) {
+                var sendDataValue = Task.FromResult(await sendDate
+                    .PostDateValuesAsync(dtPontoValue)).ConfigureAwait(false).GetAwaiter();
+            }
+            catch (Exception ex)
+            {
                 confirmLoader.IsVisible = false;
                 sendError.IsVisible = true;
 
-                await DisplayAlert("ERRO", $"Encontramos um problema ao salvar o seu ponto. Mais detalhes {ex.Message}", "OK");  
+                await DisplayAlert("ERRO", $"Encontramos um problema ao salvar o seu ponto. Mais detalhes {ex.Message}", "OK");
             }
 
             confirmLoader.IsVisible = false;
@@ -65,14 +67,13 @@ namespace ManagerHours.View
 
         private async void InserirComObs(string messageObs, DateTime dtPonto)
         {
-            GetEvento getEvento = new GetEvento();
             string data = dtPonto.ToString("dd/MM");
             string obs = messageObs;
 
             var dtPontoValue = new DateValue
             {
                 Data = data,
-                Evento = getEvento.GetEventForTime(dtPonto).ToString(),
+                Evento = dtPonto.GetEventForTime().Result,
                 Hora = dtPonto.ToShortTimeString(),
                 Autor = "Leonardo Guilen",
             };
@@ -85,11 +86,11 @@ namespace ManagerHours.View
 
             try
             {
-                Parallel.Invoke(new ParallelOptions 
-                { 
-                    CancellationToken = CancellationToken.None, 
-                    MaxDegreeOfParallelism = 2, 
-                    TaskScheduler = null 
+                Parallel.Invoke(new ParallelOptions
+                {
+                    CancellationToken = CancellationToken.None,
+                    MaxDegreeOfParallelism = 2,
+                    TaskScheduler = null
                 },
                 async () =>
                 {
@@ -102,7 +103,9 @@ namespace ManagerHours.View
                         .ConfigureAwait(false).GetAwaiter();
                 });
 
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 confirmLoader.IsVisible = false;
                 sendError.IsVisible = true;
 
@@ -114,7 +117,7 @@ namespace ManagerHours.View
 
             await Task.Delay(1500);
 
-            await DisplayAlert("SUCESSO", "Seu novo ponto foi salvo com sucesso!","OK");
+            await DisplayAlert("SUCESSO", "Seu novo ponto foi salvo com sucesso!", "OK");
 
             await Navigation.PopAllPopupAsync();
         }

@@ -1,11 +1,11 @@
-﻿using System.Net;
-using System.Text;
-using System.Net.Http;
-using Newtonsoft.Json;
-using ManagerHours._Util;
-using System.Threading.Tasks;
-using ManagerHours.Model;
+﻿using ManagerHours._Util;
 using ManagerHours.Interfaces;
+using ManagerHours.Model;
+using Newtonsoft.Json;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ManagerHours.Implementation
 {
@@ -67,7 +67,7 @@ namespace ManagerHours.Implementation
                 }
             }
 
-            return response.StatusCode == HttpStatusCode.OK ? true : false;
+            return response.StatusCode == HttpStatusCode.OK;
         }
 
         public async Task<bool> SendObservation(ObsValue obsValue)
@@ -93,7 +93,7 @@ namespace ManagerHours.Implementation
                 }
             }
 
-            return response.StatusCode == HttpStatusCode.OK ? true : false;
+            return response.StatusCode == HttpStatusCode.OK;
         }
     }
 }
